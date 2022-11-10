@@ -2,6 +2,7 @@ const express = require('express')
 var cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -23,6 +24,7 @@ async function run() {
     try {
         const servicesCollection = client.db("cakeAndCraft").collection("services");
         const reviewsCollection = client.db("cakeAndCraft").collection("reviews");
+
         // send total service data
         app.get('/services', async (req, res) => {
             const query = {};
@@ -59,6 +61,8 @@ async function run() {
             const review = await reviewsCollection.findOne(query);
             res.send(review)
         })
+
+
         //send user total reviews
         app.get('/userReviews/:uid', async (req, res) => {
             const uid = req.params.uid;
@@ -79,6 +83,7 @@ async function run() {
             const result = await reviewsCollection.insertOne(review);
             res.send(result)
         })
+        //add update review
         app.patch('/update/review/:id', async (req, res) => {
             const id = req.params.id
             const feedback = req.body;
